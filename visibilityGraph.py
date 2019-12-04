@@ -1,6 +1,7 @@
 import numpy as np
 from sortUtil import sortedByAngleFromPoint
 from primitives import *
+from rbTree import *
 from visualizationPrimitives import Scene,LinesCollection,PointsCollection
 
 class VisibilityGraph:
@@ -36,12 +37,19 @@ class VisibilityGraph:
         return (G , E)
 
     def __visibleVerticesFrom(self , point):
-        sortedPoints = sortedByAngleFromPoint(point , self.vertices , 1e-5)
+        sortedPoints = sortedByAngleFromPoint(point , self.vertices , 1e-10)
+        """ debug or sth here
         print("sorted from " , point.id , ": ")
         for p in sortedPoints:
             print(p.id , end=' ')
         print("")
+        """
+        #magic check begins
+        rbT = RedBlackTree()
         #TODO: use magic to check which of sortedPoints are visible from point
         return sortedPoints
+
+    def __visible(self, p0, point):
+        
 
         
