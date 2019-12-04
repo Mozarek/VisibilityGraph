@@ -25,7 +25,6 @@ class _Button_callback(object):
         self.scenes = scenes
         self.adding_rects = False
         self.polygons_asLines = []
-        self.polygons_asPoints = []
         self.json_file = "test.json"
 
     def set_axes(self, ax):
@@ -86,7 +85,6 @@ class _Button_callback(object):
         for collection in (self.scenes[self.i].points + self.polygons_asPoints):
             if len(collection.points) > 0:
                 self.ax.scatter(*zip(*(np.array(collection.points))), **collection.kwargs)
-                self.ax.fill(*zip(*(np.array(collection.points))), '0.7')
         for collection in (self.scenes[self.i].lines + self.polygons_asLines):
             self.ax.add_collection(collection.get_collection())
         self.ax.autoscale(autoscaling)

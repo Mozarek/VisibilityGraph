@@ -25,8 +25,8 @@ def sgn(x, epsilon):
 
 def cross(p1, p2, p3, p4):
     eps = 10**-10
-    if(sgn(ccw(p1, p2, p3), eps)*sgn(ccw(p1, p2, p4), eps) <= 0
-    and sgn(ccw(p3, p4, p1), eps)*sgn(ccw(p3, p4, p2), eps) <= 0):
+    if(sgn(ccw(p1, p2, p3), eps)*sgn(ccw(p1, p2, p4), eps) < 0
+    and sgn(ccw(p3, p4, p1), eps)*sgn(ccw(p3, p4, p2), eps) < 0):
         return True
     return False
 

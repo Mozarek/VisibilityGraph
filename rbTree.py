@@ -516,3 +516,14 @@ class RedBlackTree:
             sibling = parent.right
             direction = 'R'
         return sibling, direction
+
+    def leftmostLeaf(self):
+        def __innerLeftmostLeaf(self, root):
+            if root is None or root == self.NIL_LEAF:
+                return None
+            elif root.left is None or root.left == self.NIL_LEAF:
+                return root.value
+            else:
+                return __innerLeftmostLeaf(self, root.left)
+        
+        return __innerLeftmostLeaf(self, self.root)

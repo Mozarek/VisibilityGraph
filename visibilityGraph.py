@@ -37,6 +37,9 @@ class VisibilityGraph:
         return (G , E)
 
     def __visibleVerticesFrom(self , point):
+        def __visible(self, visiblePoint):
+            leftmostEdge = 
+            return False
         sortedPoints = sortedByAngleFromPoint(point , self.vertices , 1e-10)
         """ debug or sth here
         print("sorted from " , point.id , ": ")
@@ -46,10 +49,9 @@ class VisibilityGraph:
         """
         #magic check begins
         rbT = RedBlackTree()
+        visible = list()
         #TODO: use magic to check which of sortedPoints are visible from point
         return sortedPoints
 
-    def __visible(self, p0, point):
-        
 
         
