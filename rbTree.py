@@ -517,9 +517,9 @@ class RedBlackTree:
 
     def successor(self, value):
         def succHelper(node):
-            if node == self.NIL_LEAF:
+            if node is None or node == self.NIL_LEAF:
                 return None
-            if node.parent != self.NIL_LEAF and node.parent.right == node:
+            if node.parent is not None and node.parent == self.NIL_LEAF and node.parent.right == node:
                 return node.parent.value
             if node.left != self.NIL_LEAF:
                 node = node.left

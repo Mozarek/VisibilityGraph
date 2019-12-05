@@ -1,6 +1,6 @@
 import numpy as np
 
-def detectIntersection(ray,seg):
+def detectRaySegIntersection(ray,seg , EPS):
     def getIntersectionPoint(seg1,seg2):
         xdiff = (seg1[0][0] - seg1[1][0], seg2[0][0] - seg2[1][0])
         ydiff = (seg1[0][1] - seg1[1][1], seg2[0][1] - seg2[1][1])
@@ -33,15 +33,18 @@ def detectIntersection(ray,seg):
         v2 = [p2[0]-p0[0] , p2[1]-p0[1]]
         return np.dot(v1,v2)
     
-    p1,p2 = ray
-    p3,p4 = seg
+    p1 = ray[0].coords
+    p2 = ray[1].coords
+    p3 = seg[0].coords
+    p4 = seg[1].coords
+
     # d1 = direction(p3, p4, p1)
     # d2 = direction(p3, p4, p2)
     d3 = direction(p1, p2, p3)
     d4 = direction(p1, p2, p4)
 
-    if ((d3 >= 0 and d4 <= 0) or (d3 <= 0 and d4 >= 0)) and not (d3 == 0 and d4 == 0):
-        point  = getIntersectionPoint(ray , seg)
+    if ((d3 >= 0 and d4 <= 0) or (d3 <= 0 and d4 >= 0)) and not (abs(d3) < EPS and abs(d4) < EPS):
+        point  = getIntersectionPoint([p1,p2] , [p3,p4])
         if dotProduct(p1,p2,point)>0:
             return point
 
