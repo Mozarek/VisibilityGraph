@@ -480,15 +480,31 @@ class RedBlackTree:
         def inner_find(root):
             if root is None or root == self.NIL_LEAF:
                 return None
-            if value > root.value:
+            if value == root.value:
+                return root
+            elif value > root.value:
                 return inner_find(root.right)
             elif value < root.value:
                 return inner_find(root.left)
             else:
-                return root
+                print("error")
+                return None
 
         found_node = inner_find(self.root)
         return found_node
+
+    def findLeftmostValue(self):
+        if self.root is None:
+            return None
+        
+        def inner_findLeftmostValue(root):
+            if root.left is None or root.left == self.NIL_LEAF:
+                return root
+            else:
+                return inner_findLeftmostValue(root.left)
+
+        found_node = inner_findLeftmostValue(self.root)
+        return found_node.value
 
     def _find_in_order_successor(self, node):
         right_node = node.right
@@ -498,6 +514,20 @@ class RedBlackTree:
         while left_node.left != self.NIL_LEAF:
             left_node = left_node.left
         return left_node
+
+    def successor(self, value):
+        def succHelper(node):
+            if node == self.NIL_LEAF:
+                return None
+            if node.parent != self.NIL_LEAF and node.parent.right == node:
+                return node.parent.value
+            if node.left != self.NIL_LEAF:
+                node = node.left
+                while node.right != self.NIL_LEAF:
+                    node = node.right
+                return node.value
+        
+        return succHelper(self.find_node(value))
 
     def _get_sibling(self, node):
         """
@@ -516,14 +546,3 @@ class RedBlackTree:
             sibling = parent.right
             direction = 'R'
         return sibling, direction
-
-    def leftmostLeaf(self):
-        def __innerLeftmostLeaf(self, root):
-            if root is None or root == self.NIL_LEAF:
-                return None
-            elif root.left is None or root.left == self.NIL_LEAF:
-                return root.value
-            else:
-                return __innerLeftmostLeaf(self, root.left)
-        
-        return __innerLeftmostLeaf(self, self.root)
