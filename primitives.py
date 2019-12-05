@@ -1,4 +1,5 @@
 from sortUtil import *
+from rayLineIntersection import detectRaySegIntersection
 
 class Obstacle:
     def __init__(self , points, id):
@@ -31,14 +32,7 @@ class TreeEdge:
         self.pointCoords = [p1.coords , p2.coords]
     
     def __gt__(self, other):
-        p0 = self.orientPoint
-        p1 = self.points[0]
-        p2 = self.points[1]
-        p3 = other.points[0]
-        p4 = other.points[1]
-        if(cross(p0, p1, p3, p4) or cross(p0, p2, p3, p4)):
-            return True
-        return isEdgeCloser(other, self)
+        return self != other and not self < other
         
     def __ge__(self,other):
         return self > other or self == other
@@ -47,14 +41,38 @@ class TreeEdge:
         return self < other or self == other
 
     def __lt__(self, other):
+        EPS = 1e-10
         p0 = self.orientPoint
         p1 = self.points[0]
         p2 = self.points[1]
         p3 = other.points[0]
         p4 = other.points[1]
-        if(cross(p1, p2, p3, p0) or cross(p1, p2, p4, p0)):
-            return True
-        return isEdgeCloser(self, other)
+        if p1 != p3 and p1 != p4:
+            if checkCross([p0, p1] , [p3,p4] , EPS):
+                return False
+            elif detectRaySegIntersection([p0,p1],[p3,p4],EPS):
+                return True
+        
+        if p2!=p3 and p2!=p4:
+            if checkCross([p0, p2] , [p3,p4] , EPS):
+                return False
+            elif detectRaySegIntersection([p0,p2],[p3,p4],EPS):
+                return True
+        
+        if p3!=p1 and p3!=p2:
+            if checkCross([p0, p3] , [p1,p2] , EPS):
+                return True
+            elif detectRaySegIntersection([p0,p3],[p1,p2],EPS):
+                return False
+        
+        if p4!=p1 and p4!=p2:
+            if checkCross([p0, p4] , [p1,p2] , EPS):
+                return True
+            elif detectRaySegIntersection([p0,p4],[p1,p2],EPS):
+                return False
+
+        raise Exception("Edges: " , self , " " , other , ", cannot be compared\n  with respect to: " , p0)
+
 
     def __eq__(self, other):
         if(self is None or other is None):
