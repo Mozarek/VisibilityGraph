@@ -10,7 +10,7 @@ def detectIntersection(ray,seg):
 
         div = det(xdiff, ydiff)
         if div == 0:
-            raise Exception('lines do not intersect')
+            raise Exception("lines",seg1,seg2, "do not intersect")
 
         d = (det(*seg1), det(*seg2))
         x = det(d, xdiff) / div

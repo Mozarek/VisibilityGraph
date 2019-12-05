@@ -73,7 +73,7 @@ class VisibilityGraph:
                     pointOn = p
                     other = p.nextP
                     if epsEquals(intersectionPoint,p.nextP.coords,EPS):
-                        print("swap")
+                        #print("swap")
                         (other,pointOn) = (pointOn,other)
 
                     if ccw(rayFrom , pointOn , other) > EPS:
@@ -84,15 +84,20 @@ class VisibilityGraph:
         self.scenes.append(createScene(rbT , [rayFrom,rayTo] , visibleVertices))
 
         #debug
+        print("rbT:")
         for edge in list(rbT):
             print(edge.points)
+        print("# # # #")
 
         #main loop
         previous = None
         for p in sortedPoints[1:]:
-            #if self.__visible(p0 , previous , visibleVertices , p , rbT):
-            #    visibleVertices.append(p)
-            
+            if self.__visible(p0 , previous , visibleVertices , p , rbT):
+                # print("visible: ",p, " from ", p0)
+                visibleVertices.append(p)
+            # else:
+            #     print("invisible: ",p, " from ", p0)
+
             if ccw(p0 , p , p.nextP) > EPS:
                 rbT.remove(TreeEdge(p0 , p , p.nextP))
             if ccw(p0 , p , p.prevP) > EPS:
@@ -104,29 +109,41 @@ class VisibilityGraph:
                 rbT.add(TreeEdge(p0, p, p.prevP))
             previous = p
             self.scenes.append(createScene(rbT , [rayFrom,rayTo] , visibleVertices))
-
-
-        #TODO: use magic to check which of sortedPoints are visible from p0
+        print("From: "+str(p0))
+        for v in visibleVertices:
+            print("v: "+str(v))
         return visibleVertices
 
     def __visible(self, p0, previous , visibleVertices, point , rbT):
         EPS = 1e-10
         """ checks if point is visible from p0 """
-        if locallyIntersects(p0 , point , 1e-10):
+        if locallyIntersects(p0 , point , EPS):
+            #print("F1")
             return False
         elif previous is None or abs(ccw(p0 , previous, point)) > EPS:
             e = rbT.findLeftmostValue()
-            if e is not None and e.points[0] != point and e.points[1] != point:
+            #print(e)
+            if e is not None and e.points[0] != point and e.points[1] != point and cross(p0, point, e.points[0], e.points[1]):
+                #print("F2")
                 return False
             else:
+                #print("T1")
                 return True
         else:
             if len(visibleVertices)>0 and previous != visibleVertices[-1]:
+                #print("F3")
                 return False
             else:
-                print("damn")
+                #print("__existsEdgeBetween: ", previous, point)
+                return not __existsEdgeBetween(previous, point)
                 #TODO search for edge intersecting [previous , point]
-                return False
-        
 
-        
+        def __existsEdgeBetween(nearPoint, farPoint, rbT):
+            e1 = rbT.successor(TreeEdge(nearPoint.orientPoint, nearPoint, nearPoint.nextP))
+            ek1 = TreeEdge(farPoint.orientPoint, farPoint, farPoint.nextP)
+            ek2 = TreeEdge(farPoint.orientPoint, farPoint, farPoint.prevP)
+            while e1 != None and e1 != ek1 and e1 != ek2:
+                if cross(nearPoint, farPoint, e1.points[0], e1.points[1]):
+                    return True
+                e1 = rbT.successor(e1)
+            return False

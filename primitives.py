@@ -38,14 +38,8 @@ class TreeEdge:
         p4 = other.points[1]
         if(cross(p0, p1, p3, p4) or cross(p0, p2, p3, p4)):
             return True
-        min1 = min(distP(p0, p1), distP(p0, p2))
-        max1 = max(distP(p0, p1), distP(p0, p2))
-        min2 = min(distP(p0, p3), distP(p0, p4))
-        max2 = max(distP(p0, p3), distP(p0, p4))
-        if(min2 < min1 and max2 < max1):
-            return True
-        return False
-    
+        return isEdgeCloser(other, self)
+        
     def __ge__(self,other):
         return self > other or self == other
 
@@ -60,13 +54,7 @@ class TreeEdge:
         p4 = other.points[1]
         if(cross(p1, p2, p3, p0) or cross(p1, p2, p4, p0)):
             return True
-        min1 = min(distP(p0, p1), distP(p0, p2))
-        max1 = max(distP(p0, p1), distP(p0, p2))
-        min2 = min(distP(p0, p3), distP(p0, p4))
-        max2 = max(distP(p0, p3), distP(p0, p4))
-        if(min1 < min2 and max1 < max2):
-            return True
-        return False
+        return isEdgeCloser(self, other)
 
     def __eq__(self, other):
         if(self is None or other is None):
@@ -75,3 +63,6 @@ class TreeEdge:
             return False
         return ((self.points[0] == other.points[0] and self.points[1] == other.points[1])
                 or (self.points[0] == other.points[1] and self.points[1] == other.points[0]))
+            
+    def __repr__(self):
+        return "E(P1: "+str(self.points[0])+" || P2: "+str(self.points[1])+")"

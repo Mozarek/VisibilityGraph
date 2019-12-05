@@ -515,6 +515,20 @@ class RedBlackTree:
             left_node = left_node.left
         return left_node
 
+    def successor(self, value):
+        def succHelper(node):
+            if node == self.NIL_LEAF:
+                return None
+            if node.parent != self.NIL_LEAF and node.parent.right == node:
+                return node.parent.value
+            if node.left != self.NIL_LEAF:
+                node = node.left
+                while node.right != self.NIL_LEAF:
+                    node = node.right
+                return node.value
+        
+        return succHelper(self.find_node(value))
+
     def _get_sibling(self, node):
         """
         Returns the sibling of the node, as well as the side it is on

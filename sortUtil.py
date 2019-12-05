@@ -19,6 +19,11 @@ def locallyIntersects(p0 , p , EPS):
     """checks if segment [p0 , p] locally at p intersects interior of obstacle that p belongs to
         IMPORTANT: it is assumed that obstacles' points are always given in counter-clockwise order
     """
+    # print("locallyIntersects: ",p0, p, " ccw: ", ccw(p.prevP , p , p.nextP))
+    # print("ccw1: ", ccw(p.prevP , p , p0))
+    # print("ccw2:", ccw(p , p.nextP , p0))
+    if p0 == p.nextP or p0 == p.prevP:
+        return False
     if ccw(p.prevP , p , p.nextP) < -EPS:
         return ccw(p.prevP , p , p0) > EPS or ccw(p , p.nextP , p0) > EPS
     else:
@@ -29,6 +34,24 @@ def distP(p1 , p2):
 
 def dist(p1 , p2):
     return np.square(p1[0]-p2[0]) + np.square(p1[1]-p2[1])
+
+def isEdgeCloser(edge1, edge2):
+    def other(num):
+        if num == 1:
+            return 0
+        return 1
+    p0 = edge1.orientPoint
+    min1 = min(distP(p0, edge1.points[0]), distP(p0, edge1.points[1]))
+    max1 = max(distP(p0, edge1.points[0]), distP(p0, edge1.points[1]))
+    min2 = min(distP(p0, edge2.points[0]), distP(p0, edge2.points[1]))
+    max2 = max(distP(p0, edge2.points[0]), distP(p0, edge2.points[1]))
+    if min1 < min2 and max1 < max2:
+        return True
+    for x in range(2):
+        for y in range(2):
+            if edge1.points[x] == edge2.points[y]:
+                return distP(p0, edge1.points[other(x)]) < distP(p0, edge2.points[other(y)])
+    return False
 
 def epsEquals(p1, p2 , eps):
     return dist(p1,p2) < eps
@@ -43,28 +66,10 @@ def sgn(x, epsilon):
 
 def cross(p1, p2, p3, p4):
     eps = 10**-10
-    if(sgn(ccw(p1, p2, p3), eps)*sgn(ccw(p1, p2, p4), eps) <= 0
-    and sgn(ccw(p3, p4, p1), eps)*sgn(ccw(p3, p4, p2), eps) <= 0):
+    if(sgn(ccw(p1, p2, p3), eps)*sgn(ccw(p1, p2, p4), eps) < 0
+    and sgn(ccw(p3, p4, p1), eps)*sgn(ccw(p3, p4, p2), eps) < 0):
         return True
     return False
-
-""" not working but not needed
-def crossPoint(p1, p2, p3, p4):
-    xdiff = (p1[0] - p2[0], p3[0] - p4[0])
-    ydiff = (p1[1] - p2[1], p3[1] - p4[1])
-
-    def det(a, b):
-        return a[0] * b[1] - a[1] * b[0]
-
-    div = det(xdiff, ydiff)
-    if div == 0:
-       raise Exception('lines do not intersect')
-
-    d = (det(*line1), det(*line2))
-    x = det(d, xdiff) / div
-    y = det(d, ydiff) / div
-    return x, y
-"""
 
 class Comparator:
     def __init__(self, p0 , epsilon):
