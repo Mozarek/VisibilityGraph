@@ -6,14 +6,32 @@ def sortedByAngleFromPoint(point , allPoints , epsilon):
     points = sorted(allPoints , key = cmp_to_key(my_comp.mycmp))
     return points
 
-def ccw(a,b,c):
-    """returns positive number when points a,b,c are counterclockwise , negative number when clockwise , 0 when collinear
+def ccw(p1,p2,p3):
+    """returns positive number when points p1,p2,p3 are counterclockwise , negative number when clockwise , 0 when collinear
        important to treat 0 as (-epsilon,epsilon) because of floating point arithmetic
     """
+    a = p1.coords
+    b = p2.coords
+    c = p3.coords
     return a[0]*b[1] + b[0]*c[1] + c[0]*a[1] - a[0]*c[1] - a[1]*b[0] - b[1]*c[0]
+
+def locallyIntersects(p0 , p , EPS):
+    """checks if segment [p0 , p] locally at p intersects interior of obstacle that p belongs to
+        IMPORTANT: it is assumed that obstacles' points are always given in counter-clockwise order
+    """
+    if ccw(p.prevP , p , p.nextP) < -EPS:
+        return ccw(p.prevP , p , p0) > EPS or ccw(p , p.nextP , p0) > EPS
+    else:
+        return ccw(p.prevP , p , p0) > EPS and ccw(p , p.nextP , p0) > EPS
+
+def distP(p1 , p2):
+    return np.square(p1.coords[0]-p2.coords[0]) + np.square(p1.coords[1]-p2.coords[1])
 
 def dist(p1 , p2):
     return np.square(p1[0]-p2[0]) + np.square(p1[1]-p2[1])
+
+def epsEquals(p1, p2 , eps):
+    return dist(p1,p2) < eps
 
 def sgn(x, epsilon):
     if x < -epsilon:
@@ -54,11 +72,11 @@ class Comparator:
         self.eps = epsilon
 
     def mycmp(self,a, b):                             
-        det = ccw(self.p0.coords , b.coords , a.coords)
+        det = ccw(self.p0 , b , a)
         if abs(det) < self.eps:
-            if dist(self.p0.coords , b.coords) < dist(self.p0.coords , a.coords):
+            if distP(self.p0 , b) < distP(self.p0 , a):
                 return 1
             else:
                 return -1
         else:
-            return det
+            return -det

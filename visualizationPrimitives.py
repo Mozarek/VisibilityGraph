@@ -1,5 +1,13 @@
 import matplotlib.collections as mcoll
 
+def createScene(edgesOnTree , ray , visibleVertices):
+    print([v.coords for v in visibleVertices])
+    print(ray[0])
+    return Scene(points = [PointsCollection([v.coords for v in visibleVertices] , color = "green"),
+                            PointsCollection([ray[0].coords] , color = "red" , s=100)],
+                lines = [LinesCollection([e.pointCoords for e in edgesOnTree] , color = "orange"),
+                        LinesCollection([[ray[0].coords , ray[1].coords]] , color = "red")])
+
 class Scene:
     def __init__(self, points=[], lines=[]):
         self.points=points

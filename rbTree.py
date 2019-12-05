@@ -480,15 +480,31 @@ class RedBlackTree:
         def inner_find(root):
             if root is None or root == self.NIL_LEAF:
                 return None
-            if value > root.value:
+            if value == root.value:
+                return root
+            elif value > root.value:
                 return inner_find(root.right)
             elif value < root.value:
                 return inner_find(root.left)
             else:
-                return root
+                print("error")
+                return None
 
         found_node = inner_find(self.root)
         return found_node
+
+    def findLeftmostValue(self):
+        if self.root is None:
+            return None
+        
+        def inner_findLeftmostValue(root):
+            if root.left is None or root.left == self.NIL_LEAF:
+                return root
+            else:
+                return inner_findLeftmostValue(root.left)
+
+        found_node = inner_findLeftmostValue(self.root)
+        return found_node.value
 
     def _find_in_order_successor(self, node):
         right_node = node.right
