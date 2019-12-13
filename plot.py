@@ -40,6 +40,18 @@ class Plot:
         return js.dumps([{"points": [np.array(pointCol.points).tolist() for pointCol in scene.points], 
                           "lines":[linesCol.lines for linesCol in scene.lines]} 
                          for scene in self.scenes])    
+        
+    def get_added_figure(self):
+        if self.callback:
+            return [r for r in self.callback.added_rects if len(r.lines)>0]
+        else:
+            return None
+    
+    def get_added_elements(self):
+        if self.callback:
+            return Scene(lines = self.callback.added_rects)
+        else:
+            return None
     
     def draw(self):
         plt.close()

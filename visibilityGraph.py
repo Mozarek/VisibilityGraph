@@ -93,8 +93,18 @@ class VisibilityGraph:
         return visibleVertices
 
     def __visible(self, p0, previous , visibleVertices, point , rbT):
-        def __existsEdgeBetween(nearPoint, farPoint):
+        def __existsEdgeBetween(p1, p2):
+            if(distP(p0, p1) < distP(p0, p2)):
+                nearPoint = p1
+                farPoint = p2
+            else:
+                nearPoint = p2
+                farPoint = p1
             e1 = rbT.successor(TreeEdge(p0, nearPoint, nearPoint.nextP))
+            if(nearPoint.id == 6 or farPoint.id == 6):
+                print(TreeEdge(p0, nearPoint, nearPoint.nextP), nearPoint, farPoint, e1)
+                for e in rbT:
+                    print("  ",e)
             ek1 = TreeEdge(p0, farPoint, farPoint.nextP)
             ek2 = TreeEdge(p0, farPoint, farPoint.prevP)
             while e1 != None and e1 != ek1 and e1 != ek2:

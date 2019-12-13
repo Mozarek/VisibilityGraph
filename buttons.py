@@ -53,7 +53,7 @@ class _Button_callback(object):
             self.new_rect()
     
     def run(self,event):
-        vg = VisibilityGraph([edgesToPoints(poly.lines) for poly in self.polygons_asLines])
+        vg = VisibilityGraph([edgesToPoints(rect.lines) for rect in self.polygons_asLines])
         vg.calculateVisibilityGraph()
         self.scenes.extend(vg.scenes)
     
