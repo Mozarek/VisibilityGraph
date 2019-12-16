@@ -46,7 +46,7 @@ class VisibilityGraph:
     def __visibleVerticesFrom(self , p0):
         """returns a list of Point objects visible from p0"""
         EPS = 1e-10
-        sortedPoints = sortedByAngleFromPoint(p0 , self.vertices , EPS)
+        sortedPoints = sortedByAngleFromPoint(p0 , self.vertices , 1e-4)
 
         #initialize tree
         rbT = RedBlackTree()
@@ -110,7 +110,7 @@ class VisibilityGraph:
 
         EPS = 1e-10
         """ checks if point is visible from p0 """
-        if locallyIntersects(p0 , point , EPS):
+        if locallyIntersects(p0 , point , EPS) or locallyIntersects(point , p0 , EPS):
             return False
         elif previous is None or abs(ccw(p0 , previous, point)) > EPS:
             e = rbT.findLeftmostValue()
