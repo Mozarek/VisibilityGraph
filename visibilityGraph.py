@@ -94,7 +94,6 @@ class VisibilityGraph:
 
     def __visible(self, p0, previous , visibleVertices, point , rbT):
         def __existsEdgeBetween(p1, p2):
-            print("edge between called")
             if(distP(p0, p1) < distP(p0, p2)):
                 nearPoint = p1
                 farPoint = p2

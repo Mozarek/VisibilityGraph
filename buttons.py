@@ -26,7 +26,7 @@ class _Button_callback(object):
         self.adding_rects = False
         self.polygons_asLines = []
         self.polygons_asPoints = []
-        self.json_file = "test.json"
+        self.json_file = "tests/test.json"
 
     def set_axes(self, ax):
         self.ax = ax
