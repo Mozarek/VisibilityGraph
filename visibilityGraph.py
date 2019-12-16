@@ -94,6 +94,7 @@ class VisibilityGraph:
 
     def __visible(self, p0, previous , visibleVertices, point , rbT):
         def __existsEdgeBetween(p1, p2):
+            print("edge between called")
             if(distP(p0, p1) < distP(p0, p2)):
                 nearPoint = p1
                 farPoint = p2
@@ -101,17 +102,11 @@ class VisibilityGraph:
                 nearPoint = p2
                 farPoint = p1
             e1 = rbT.successor(TreeEdge(p0, nearPoint, nearPoint.nextP))
-            if(nearPoint.id == 6 or farPoint.id == 6):
-                print(TreeEdge(p0, nearPoint, nearPoint.nextP), nearPoint, farPoint, e1)
-                for e in rbT:
-                    print("  ",e)
+            if e1 == TreeEdge(p0 , nearPoint , nearPoint.prevP):
+                e1 = rbT.successor(e1)
             ek1 = TreeEdge(p0, farPoint, farPoint.nextP)
             ek2 = TreeEdge(p0, farPoint, farPoint.prevP)
-            while e1 != None and e1 != ek1 and e1 != ek2:
-                if checkCross([nearPoint, farPoint], e1.points, EPS):
-                    return True
-                e1 = rbT.successor(e1)
-            return False
+            return e1 != None and e1 != ek1 and e1 != ek2
 
         EPS = 1e-10
         """ checks if point is visible from p0 """

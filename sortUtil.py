@@ -1,11 +1,12 @@
 from functools import cmp_to_key
 import numpy as np
 
-
 def sortedByAngleFromPoint(p0 , allPoints , epsilon):
     """sorts allPoints by angle relative to p0"""
     my_comp = Comparator(p0 , epsilon)
     points = sorted(allPoints , key = cmp_to_key(my_comp.mycmp))
+    points.remove(p0)
+    points.insert(0,p0)
     return points
 
 class Comparator:
@@ -13,15 +14,17 @@ class Comparator:
         self.p0=p0
         self.eps = epsilon
 
-    def mycmp(self,a, b):                             
-        det = ccw(self.p0 , b , a)
-        if abs(det) < self.eps:
+    def mycmp(self,a, b):
+        angleA = np.arctan2(a.coords[1]-self.p0.coords[1] , a.coords[0] - self.p0.coords[0])
+        angleB = np.arctan2(b.coords[1]-self.p0.coords[1] , b.coords[0] - self.p0.coords[0])
+        angleDiff = angleA-angleB
+        if abs(angleDiff) < self.eps:
             if distP(self.p0 , b) < distP(self.p0 , a):
                 return 1
             else:
                 return -1
         else:
-            return -det
+            return -angleDiff
 
 def ccw(p1,p2,p3):
     """returns positive number when points p1,p2,p3 are counterclockwise , negative number when clockwise , 0 when collinear
